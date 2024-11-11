@@ -1,6 +1,6 @@
 "Module exposing OpenCV via Bazel."
 
-module(name = "opencv")
+module(name = "opencv-bazel")
 
 # Hedron's Compile Commands Extractor for Bazel
 # https://github.com/hedronvision/bazel-compile-commands-extractor
@@ -12,3 +12,17 @@ git_override(
 )
 
 bazel_dep(name = "buildifier_prebuilt", version = "6.4.0", dev_dependency = True)
+
+bazel_dep(name = "rules_foreign_cc", version = "0.12.0")
+
+bazel_dep(name = "opencv_4_10_0")
+archive_override(
+    module_name = "opencv_4_10_0",
+    patches = [
+        "//:MODULE.expose_all.patch",
+        "//:MODULE.opencv_4_10_0_module.patch",
+    ],
+    integrity = "sha256-OBC8orHRxXKRLfCsOIgSY0Hzdi39KOkQaMgF+2VtDlE=",
+    strip_prefix = "opencv-4.10.0",
+    urls = ["https://github.com/opencv/opencv/archive/refs/tags/4.10.0.zip"],
+)
