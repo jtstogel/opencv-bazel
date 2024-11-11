@@ -1,0 +1,11 @@
+"""Module exercising a basic dependency."""
+
+module(name = "bzlmod_example")
+
+bazel_dep(name = "googletest", version = "1.14.0.bcr.1")
+
+bazel_dep(name = "opencv-bazel")
+local_path_override(
+    module_name = "opencv-bazel",
+    path = "../..",
+)

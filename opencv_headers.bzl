@@ -2,7 +2,17 @@
 DO NOT EDIT. This file is generated.
 
 To regenerate this file, from the workspace root, run:
- $ bazel run //src:list_headers > src/opencv_headers.bzl
+ $ bash devtools/opencv_headers_gen.sh
+
+Bazel needs to know ahead of time what all the outputs of a rule are.
+OpenCV's CMake workflow does all sorts of things to make this annoying.
+For instance, `opencv_modules.hpp` is actually a text template file
+that gets substituded with enabled modules during the CMake process.
+
+The above command just lists all header files from the CMake output
+and writes them into this file.
+
+TODO(jtstogel): Consider adding a test to ensure this file is always up-to-date.
 """
 
 OPENCV_HEADERS = [
