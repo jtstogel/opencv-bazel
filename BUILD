@@ -10,8 +10,8 @@ exports_files(["LICENSE"])
 
 cc_library(
     name = "opencv",
-    srcs = [":opencv_shared_libs"],
-    hdrs = [":opencv_hdrs"],
+    srcs = ["lib/libopencv_world.so"],
+    hdrs = OPENCV_HEADERS,
     strip_include_prefix = "include/opencv4/",
     copts = [
         "-fexceptions",
@@ -24,7 +24,7 @@ genrule(
     name = "opencv_shared_libs",
     srcs = [":opencv_cmake"],
     outs = ["lib/libopencv_world.so"],
-    cmd = "cp -r $(locations :opencv_cmake) $(@D)",
+    cmd = "cp -fRL $(locations :opencv_cmake) $(@D)",
 )
 
 # Selects the headers we want to expose.
@@ -32,7 +32,7 @@ genrule(
     name = "opencv_hdrs",
     srcs = [":opencv_cmake"],
     outs = OPENCV_HEADERS,
-    cmd = "cp -r $(locations :opencv_cmake) $(@D)",
+    cmd = "cp -fRL $(locations :opencv_cmake) $(@D)",
 )
 
 cmake(
