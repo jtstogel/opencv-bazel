@@ -10,7 +10,7 @@ exports_files(["LICENSE"])
 
 cc_library(
     name = "opencv",
-    srcs = ["lib/libopencv_world.so"],
+    srcs = [":opencv_shared_libs"],
     hdrs = OPENCV_HEADERS,
     strip_include_prefix = "include/opencv4/",
     copts = [
@@ -23,7 +23,7 @@ cc_library(
 genrule(
     name = "opencv_shared_libs",
     srcs = [":opencv_cmake"],
-    outs = ["lib/libopencv_world.so"],
+    outs = ["lib/libopencv_world.so.410"],
     cmd = "cp -fRL $(locations :opencv_cmake) $(@D)",
 )
 
@@ -55,7 +55,7 @@ cmake(
     lib_source = "@opencv_4_10_0//:all",
     out_include_dir = "include",
     out_lib_dir = "lib",
-    out_shared_libs = ["libopencv_world.so"],
+    out_shared_libs = ["libopencv_world.so.410"],
     targets = ["install"],
     visibility = ["//visibility:public"],
 )
