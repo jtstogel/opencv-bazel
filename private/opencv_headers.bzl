@@ -17,7 +17,7 @@ we instead provide all the expected outputs statically.
 TODO(jtstogel): Consider adding a test to ensure this file is always up-to-date.
 """
 
-OPENCV_HEADERS = [
+PATHS = [
     "include/opencv4/opencv2/calib3d.hpp",
     "include/opencv4/opencv2/calib3d/calib3d.hpp",
     "include/opencv4/opencv2/calib3d/calib3d_c.h",

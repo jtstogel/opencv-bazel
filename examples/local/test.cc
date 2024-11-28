@@ -1,12 +1,12 @@
-#include <iostream>
-
+#include "gtest/gtest.h"
 #include "opencv2/core/mat.hpp"
 #include "opencv2/imgcodecs.hpp"
 
-int main(int, char**) {
+TEST(OpenCV, ImageRead) {
   cv::Mat img =
-      cv::imread("src/examples/local/test_image.jpeg", cv::IMREAD_COLOR);
+      cv::imread("examples/local/test_image.jpeg", cv::IMREAD_COLOR);
   cv::Size size = img.size();
 
-  std::cout << size.width << "x" << size.height << std::endl;
+  EXPECT_EQ(size.width, 600);
+  EXPECT_EQ(size.height, 600);
 }

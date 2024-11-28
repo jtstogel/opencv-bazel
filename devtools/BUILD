@@ -7,17 +7,35 @@ refresh_compile_commands(
     },
 )
 
-cc_binary(
-    name = "generate_opencv_headers",
-    srcs = ["generate_opencv_headers.cc"],
-    args = [
-        "--include_dir=opencv_cmake/include",
-        "--strip_prefix=opencv_cmake/",
-    ],
-    data = ["//:opencv_cmake"],
+cc_library(
+    name = "bzl_export_files",
+    srcs = ["bzl_export_files.cc"],
     deps = [
         "@abseil-cpp//absl/flags:flag",
         "@abseil-cpp//absl/flags:parse",
+        "@abseil-cpp//absl/functional:any_invocable",
         "@abseil-cpp//absl/strings",
     ],
+)
+
+cc_binary(
+    name = "generate_opencv_headers",
+    args = [
+        "--directory=private/opencv_cmake/opencv_cmake/include",
+        "--strip_prefix=private/opencv_cmake/opencv_cmake/",
+        "--path_regex=\"[.](h|hpp)$$\"",
+    ],
+    data = ["//private/opencv_cmake"],
+    deps = [":bzl_export_files"],
+)
+
+cc_binary(
+    name = "generate_opencv_libraries",
+    args = [
+        "--directory=private/opencv_cmake/opencv_cmake/lib",
+        "--strip_prefix=private/opencv_cmake/opencv_cmake/",
+        "--path_regex=\"[.]so([.]\\d+)?$$\"",
+    ],
+    data = ["//private/opencv_cmake"],
+    deps = [":bzl_export_files"],
 )

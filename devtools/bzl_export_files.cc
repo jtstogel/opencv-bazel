@@ -2,18 +2,22 @@
 #include <filesystem>
 #include <iomanip>
 #include <iostream>
+#include <regex>
 #include <sstream>
 #include <string>
 #include <vector>
 
 #include "absl/flags/flag.h"
 #include "absl/flags/parse.h"
+#include "absl/functional/any_invocable.h"
 #include "absl/strings/strip.h"
 
-ABSL_FLAG(std::string, include_dir, "",
+ABSL_FLAG(std::string, directory, "",
           "Directory to traverse for header files.");
 
 ABSL_FLAG(std::string, strip_prefix, "", "Prefix to remove from all paths.");
+
+ABSL_FLAG(std::string, path_regex, "", "Allowed path regular expressions.");
 
 constexpr char kFileComment[] = R"("""
 DO NOT EDIT. This file is generated.
@@ -41,22 +45,32 @@ bool HasExt(StringLike filename, const std::string& ext) {
   return std::string(filename).ends_with(ext);
 }
 
-std::string GenerateBzlFile(absl::string_view include_dir,
-                            absl::string_view strip_prefix) {
+std::vector<std::string> ListPaths(
+    absl::string_view directory, absl::string_view strip_prefix,
+    absl::AnyInvocable<bool(absl::string_view path)> predicate) {
   std::vector<std::string> paths;
-
   for (const auto& entry :
-       std::filesystem::recursive_directory_iterator(include_dir)) {
-    if (HasExt(entry.path(), ".h") || HasExt(entry.path(), ".hpp")) {
-      std::string path(entry.path());
-      paths.emplace_back(absl::StripPrefix(path, strip_prefix));
+       std::filesystem::recursive_directory_iterator(directory)) {
+    if (predicate(entry.path().string())) {
+      paths.emplace_back(
+          absl::StripPrefix(entry.path().string(), strip_prefix));
     }
   }
   std::sort(paths.begin(), paths.end());
+  return paths;
+}
+
+std::string GenerateBzlFile(absl::string_view directory,
+                            absl::string_view strip_prefix,
+                            const std::regex& re) {
+  std::vector<std::string> paths =
+      ListPaths(directory, strip_prefix, [re](absl::string_view path) {
+        return std::regex_search(std::string(path), re);
+      });
 
   std::stringstream output;
   output << kFileComment;
-  output << "OPENCV_HEADERS = [" << "\n";
+  output << "PATHS = [" << "\n";
   for (const auto& path : paths) {
     output << "    " << std::quoted(path) << "," << "\n";
   }
@@ -67,6 +81,7 @@ std::string GenerateBzlFile(absl::string_view include_dir,
 int main(int argc, char** argv) {
   absl::ParseCommandLine(argc, argv);
 
-  std::cout << GenerateBzlFile(absl::GetFlag(FLAGS_include_dir),
-                               absl::GetFlag(FLAGS_strip_prefix));
+  std::regex path_regex(absl::GetFlag(FLAGS_path_regex));
+  std::cout << GenerateBzlFile(absl::GetFlag(FLAGS_directory),
+                               absl::GetFlag(FLAGS_strip_prefix), path_regex);
 }

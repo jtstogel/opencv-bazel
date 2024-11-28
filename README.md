@@ -10,7 +10,7 @@ Depend on `@opencv-bazel//:opencv`. See the `examples/` directory for usage.
 
 Run `bazel run //devtools:refresh_compile_commands` to get intellisense.
 
-If you change any CMake options, run `bash devtools/generate_opencv_headers.sh`.
+If you change any CMake options, run `bash devtools/generate_opencv_outputs.sh`.
 
 OpenCV bazel setup is basically four steps:
 
