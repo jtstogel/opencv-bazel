@@ -4,7 +4,18 @@ Use OpenCV with bazel!
 
 ### Usage
 
-Depend on `@opencv-bazel//:opencv`. See the `examples/` directory for usage.
+Depend on `@opencv-bazel//:opencv`, and include the following in your `MODULE.bazel`:
+
+```
+bazel_dep(name = "opencv-bazel")
+git_override(
+    module_name = "opencv-bazel",
+    commit = "3b7e0f50a71b8089b9c20c279c5299e9af812973",
+    remote = "https://github.com/jtstogel/opencv-bazel.git",
+)
+```
+
+See the `examples/` directory for usage.
 
 ### Developing
 
