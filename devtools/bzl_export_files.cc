@@ -23,9 +23,9 @@ constexpr char kFileComment[] = R"("""
 DO NOT EDIT. This file is generated.
 
 To regenerate this file, from the workspace root, run:
- $ bash devtools/generate_opencv_headers.sh
+ $ bash devtools/generate_opencv_outputs.sh
 
-The above command just lists all header files from the CMake output
+The above command just lists all files from the CMake output
 and writes them into this file.
 
 Bazel needs to know ahead of time what all the outputs of a rule are.
@@ -39,11 +39,6 @@ TODO(jtstogel): Consider adding a test to ensure this file is always up-to-date.
 """
 
 )";
-
-template <typename StringLike>
-bool HasExt(StringLike filename, const std::string& ext) {
-  return std::string(filename).ends_with(ext);
-}
 
 std::vector<std::string> ListPaths(
     absl::string_view directory, absl::string_view strip_prefix,

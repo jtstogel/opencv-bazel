@@ -2,9 +2,9 @@
 DO NOT EDIT. This file is generated.
 
 To regenerate this file, from the workspace root, run:
- $ bash devtools/generate_opencv_headers.sh
+ $ bash devtools/generate_opencv_outputs.sh
 
-The above command just lists all header files from the CMake output
+The above command just lists all files from the CMake output
 and writes them into this file.
 
 Bazel needs to know ahead of time what all the outputs of a rule are.
